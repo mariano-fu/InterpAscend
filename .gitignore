@@ -42,3 +42,4 @@ static/terminology/tts/
 
 # Windows
 Thumbs.db
+.venv/
