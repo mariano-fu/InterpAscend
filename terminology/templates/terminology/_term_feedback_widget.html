@@ -1,0 +1,78 @@
+{% load static %}
+
+<div class="term-feedback-widget mt-4 p-3 border rounded" 
+     data-term-id="{{ term_id|default:'' }}" 
+     data-term-type="{{ term_type }}" 
+     data-term-reference="{{ term_reference }}">
+    
+    <!-- Initial Question -->
+    <div class="feedback-question">
+        <h6 class="mb-3 text-muted">
+            <i class="fas fa-thumbs-up me-2"></i>Was this term helpful?
+        </h6>
+        <div class="feedback-buttons d-flex gap-2 mb-3">
+            <button type="button" class="btn btn-outline-success feedback-btn" data-helpful="true">
+                <i class="fas fa-thumbs-up me-1"></i> Yes, helpful
+            </button>
+            <button type="button" class="btn btn-outline-danger feedback-btn" data-helpful="false">
+                <i class="fas fa-thumbs-down me-1"></i> Not helpful
+            </button>
+        </div>
+    </div>
+    
+    <!-- Comment Section (Hidden Initially) -->
+    <div class="feedback-comment-section" style="display: none;">
+        <div class="mb-3">
+            <label for="feedback-comment-{{ term_type }}-{{ term_id|default:'llm' }}" class="form-label">
+                <small class="text-muted">Help us improve (optional):</small>
+            </label>
+            <textarea class="form-control form-control-sm feedback-comment" 
+                      id="feedback-comment-{{ term_type }}-{{ term_id|default:'llm' }}"
+                      rows="3" 
+                      maxlength="1000"
+                      placeholder="Tell us how we can make this term more helpful..."></textarea>
+            <div class="form-text">
+                <small class="text-muted">
+                    <span class="char-count">0</span>/1000 characters
+                </small>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm submit-feedback-btn">
+                <i class="fas fa-paper-plane me-1"></i> Submit Feedback
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm cancel-feedback-btn">
+                <i class="fas fa-times me-1"></i> Cancel
+            </button>
+        </div>
+    </div>
+    
+    <!-- Success Message -->
+    <div class="feedback-success" style="display: none;">
+        <div class="alert alert-success alert-sm mb-0">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>Thank you!</strong> Your feedback helps us improve our terminology database.
+        </div>
+    </div>
+    
+    <!-- Error Message -->
+    <div class="feedback-error" style="display: none;">
+        <div class="alert alert-warning alert-sm mb-0">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span class="error-message"></span>
+        </div>
+    </div>
+    
+    <!-- Loading State -->
+    <div class="feedback-loading" style="display: none;">
+        <div class="d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <small class="text-muted">Submitting your feedback...</small>
+        </div>
+    </div>
+</div>
+
+<!-- Include CSRF token for AJAX requests -->
+{% csrf_token %}

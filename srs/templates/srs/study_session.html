@@ -1,0 +1,546 @@
+{% extends 'terminology/base.html' %}
+{% load static %}
+
+{% block title %}Study {{ category.name }} - InterpAscend{% endblock %}
+
+{% csrf_token %}
+
+{% block extra_head %}
+<style>
+    .flashcard-container {
+        min-height: 400px;
+        perspective: 1000px;
+    }
+    
+    .flashcard {
+        min-height: 300px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid #dee2e6;
+    }
+    
+    .flashcard:hover {
+        border-color: #007bff;
+        box-shadow: 0 4px 8px rgba(0,123,255,0.2);
+    }
+    
+    .flashcard-front {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    .flashcard-back {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    }
+    
+    .quality-buttons .btn {
+        min-width: 80px;
+        margin: 0 5px;
+    }
+    
+    .study-progress {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 1000;
+        background: rgba(255,255,255,0.95);
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .card-info {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-top: 10px;
+    }
+    
+    .loading-spinner {
+        display: none;
+    }
+    
+    .htmx-request .loading-spinner {
+        display: inline-block;
+    }
+    
+    .htmx-request .btn-text {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="fas fa-play me-2 text-primary"></i>
+                Study {{ category.name }}
+            </h1>
+            <a href="{% url 'srs:category_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to Categories
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Study Progress Panel -->
+<div class="study-progress d-none d-lg-block">
+    <h6 class="mb-2">
+        <i class="fas fa-chart-line me-2"></i>
+        Session Progress
+    </h6>
+    <div id="session-stats">
+        <div class="mb-2">
+            <small class="text-muted">Cards Reviewed:</small>
+            <span id="cards-reviewed" class="fw-bold">0</span>
+        </div>
+        <div class="mb-2">
+            <small class="text-muted">Success Rate:</small>
+            <span id="success-rate" class="fw-bold">-</span>
+        </div>
+        <div>
+            <small class="text-muted">Session ID:</small>
+            <code class="small">{{ study_session_id }}</code>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        {% if has_cards %}
+            <!-- Study Interface -->
+            <div id="study-container">
+                <div class="text-center mb-3">
+                    <div class="btn-group" role="group">
+                        <button id="start-study-btn" class="btn btn-primary btn-lg" 
+                                hx-get="{% url 'srs:get_next_card' category.slug %}"
+                                hx-target="#flashcard-area"
+                                hx-swap="innerHTML">
+                            <i class="fas fa-play me-2"></i>
+                            <span class="btn-text">Start Studying</span>
+                            <span class="loading-spinner spinner-border spinner-border-sm" role="status"></span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Flashcard Area -->
+                <div id="flashcard-area" class="flashcard-container">
+                    <div class="card flashcard text-center">
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <div>
+                                <h4 class="text-muted mb-3">
+                                    <i class="fas fa-cards-blank me-2"></i>
+                                    Ready to Study
+                                </h4>
+                                <p class="text-muted">Click "Start Studying" to begin your session</p>
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        {{ due_cards_count }} cards due for review
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Study Tips -->
+                <div class="mt-4">
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            Study Tips
+                        </h6>
+                        <ul class="mb-0 small">
+                            <li><strong>Again (1):</strong> You didn't remember the answer at all</li>
+                            <li><strong>Hard (2):</strong> You remembered with significant difficulty</li>
+                            <li><strong>Good (3):</strong> You remembered with some effort</li>
+                            <li><strong>Easy (4):</strong> You remembered effortlessly</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- No Cards Due -->
+            <div class="text-center">
+                <div class="card">
+                    <div class="card-body py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                        </div>
+                        <h3 class="text-success mb-3">All Caught Up!</h3>
+                        <p class="text-muted mb-4">
+                            You've completed all due cards in the {{ category.name }} category.
+                        </p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{% url 'srs:category_list' %}" class="btn btn-primary">
+                                <i class="fas fa-list me-2"></i>
+                                Browse Categories
+                            </a>
+                            <a href="{% url 'srs:user_stats' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-chart-bar me-2"></i>
+                                View Progress
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Hidden data for JavaScript -->
+<script id="study-data" type="application/json">
+{
+    "category_slug": "{{ category.slug }}",
+    "study_session_id": "{{ study_session_id }}",
+    "cards_reviewed": 0,
+    "successful_reviews": 0
+}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Clean, working JavaScript implementation
+(function() {
+    'use strict';
+    
+    console.log('SRS JavaScript loading...');
+    
+    // Global variables
+    let studyData = null;
+    let startTime = null;
+    
+    // Initialize when DOM is ready
+    function initializeSRS() {
+        console.log('Initializing SRS...');
+        
+        try {
+            // Load study data
+            const dataElement = document.getElementById('study-data');
+            if (dataElement) {
+                studyData = JSON.parse(dataElement.textContent);
+                console.log('Study data loaded:', studyData);
+            } else {
+                console.error('Study data element not found');
+                return;
+            }
+            
+            // Set up event listeners
+            setupEventListeners();
+            console.log('SRS initialized successfully');
+            
+        } catch (error) {
+            console.error('Error initializing SRS:', error);
+        }
+    }
+    
+    // Set up all event listeners
+    function setupEventListeners() {
+        // Quality button clicks
+        document.addEventListener('click', handleDocumentClick);
+        
+        // HTMX events
+        document.addEventListener('htmx:afterSwap', handleHTMXSwap);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', handleKeyboard);
+    }
+    
+    // Handle all document clicks
+    function handleDocumentClick(event) {
+        const target = event.target;
+        
+        // Quality button clicks
+        if (target.classList.contains('quality-btn') || target.closest('.quality-btn')) {
+            handleQualityClick(event);
+            return;
+        }
+        
+        // TTS button clicks are now handled by the global TTS manager
+    }
+    
+    // Handle quality button clicks
+    function handleQualityClick(event) {
+        console.log('Quality button clicked');
+        event.preventDefault();
+        
+        const button = event.target.closest('.quality-btn');
+        if (!button) {
+            console.error('Quality button not found');
+            return;
+        }
+        
+        const quality = parseInt(button.dataset.quality);
+        const deckItemId = button.dataset.deckItemId;
+        
+        console.log('Button data:', { quality, deckItemId, button: button });
+        
+        if (!quality || !deckItemId) {
+            console.error('Missing quality or deck item ID', { quality, deckItemId });
+            return;
+        }
+        
+        console.log('Processing review:', { quality, deckItemId });
+        
+        // Disable button to prevent double clicks
+        button.disabled = true;
+        
+        // Send review
+        submitReview(deckItemId, quality);
+    }
+    
+    // Submit review to server
+    function submitReview(deckItemId, quality) {
+        const responseTime = startTime ? Date.now() - startTime : null;
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        if (!csrfToken) {
+            console.error('CSRF token not found');
+            return;
+        }
+        
+        const reviewData = {
+            deck_item_id: deckItemId,
+            quality: quality,
+            study_session_id: studyData.study_session_id,
+            response_time_ms: responseTime
+        };
+        
+        console.log('Submitting review:', reviewData);
+        
+        fetch('/srs/study/' + studyData.category_slug + '/review/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken.value
+            },
+            body: JSON.stringify(reviewData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Review response:', data);
+            if (data.success) {
+                showFeedback(quality, data);
+                setTimeout(loadNextCard, 1500);
+            } else {
+                console.error('Review failed:', data.error);
+                // Re-enable buttons on failure
+                document.querySelectorAll('.quality-btn').forEach(btn => btn.disabled = false);
+            }
+        })
+        .catch(error => {
+            console.error('Review error:', error);
+            // Re-enable buttons on error
+            document.querySelectorAll('.quality-btn').forEach(btn => btn.disabled = false);
+        });
+    }
+    
+    // Show feedback after review
+    function showFeedback(quality, data) {
+        const qualityNames = { 1: 'Again', 3: 'Hard', 4: 'Good', 5: 'Easy' };
+        const qualityColors = { 1: 'danger', 3: 'warning', 4: 'success', 5: 'primary' };
+        
+        const feedbackHTML = '<div class="card flashcard text-center">' +
+            '<div class="card-body d-flex align-items-center justify-content-center">' +
+            '<div>' +
+            '<div class="mb-3"><i class="fas fa-check-circle text-' + qualityColors[quality] + '" style="font-size: 3rem;"></i></div>' +
+            '<h4 class="text-' + qualityColors[quality] + ' mb-3">' + qualityNames[quality] + '</h4>' +
+            '<p class="text-muted mb-2">Next review: ' + data.interval_description + '</p>' +
+            '<small class="text-muted">Loading next card...</small>' +
+            '</div></div></div>';
+        
+        document.getElementById('flashcard-area').innerHTML = feedbackHTML;
+    }
+    
+    // Load next card
+    function loadNextCard() {
+        console.log('Loading next card...');
+        if (typeof htmx !== 'undefined') {
+            htmx.ajax('GET', '/srs/study/' + studyData.category_slug + '/next-card/', {
+                target: '#flashcard-area',
+                swap: 'innerHTML'
+            });
+        }
+    }
+    
+    // Handle HTMX content swaps
+    function handleHTMXSwap(event) {
+        if (event.target.id === 'flashcard-area') {
+            console.log('Flashcard area updated');
+            startTime = Date.now();
+            
+            // Update interval displays with actual SM-2 calculations
+            updateIntervalDisplays();
+        }
+    }
+    
+    // Update interval displays with actual SM-2 calculations
+    function updateIntervalDisplays() {
+        const cardDataElement = document.getElementById('card-data');
+        if (!cardDataElement) return;
+        
+        try {
+            const cardData = JSON.parse(cardDataElement.textContent);
+            const { current_ease_factor, current_interval, current_repetitions } = cardData;
+            
+            // Calculate intervals for each quality using SM-2 logic
+            const intervals = calculateSM2Intervals(current_ease_factor, current_interval, current_repetitions);
+            
+            // Update the display
+            const interval1 = document.getElementById('interval-1');
+            const interval3 = document.getElementById('interval-3');
+            const interval4 = document.getElementById('interval-4');
+            const interval5 = document.getElementById('interval-5');
+            
+            if (interval1) interval1.textContent = `(${intervals.again})`;
+            if (interval3) interval3.textContent = `(${intervals.hard})`;
+            if (interval4) interval4.textContent = `(${intervals.good})`;
+            if (interval5) interval5.textContent = `(${intervals.easy})`;
+            
+            console.log('🔍 Updated intervals:', intervals);
+            
+        } catch (error) {
+            console.error('Error updating intervals:', error);
+        }
+    }
+    
+    // Calculate intervals for the new learning system
+    function calculateSM2Intervals(easeFactor, currentInterval, repetitions) {
+        console.log('Calculating intervals:', { easeFactor, currentInterval, repetitions });
+        
+        // Quality 1 (Again) - always resets to immediate reappearance
+        const again = 'now';
+        
+        // For successful reviews (3, 4, 5)
+        let hardInterval, goodInterval, easyInterval;
+        
+        try {
+            if (repetitions === 0) {
+                // New card or failed card - learning phase
+                hardInterval = '1m';    // Hard: reappear in 1 minute
+                goodInterval = '3m';    // Good: reappear in 3 minutes
+                easyInterval = '4d';    // Easy: graduate to 4 days
+            } else if (repetitions === 1) {
+                // Second successful review
+                hardInterval = '1d';    // Hard: 1 day
+                goodInterval = '6d';    // Good: 6 days
+                easyInterval = '6d';    // Easy: 6 days
+            } else {
+                // Mature card (repetitions >= 2) - use ease factor
+                // Handle negative intervals (minutes) vs positive intervals (days)
+                let baseInterval = Math.abs(currentInterval);
+                if (currentInterval < 0) {
+                    // Currently in minute-based learning, graduate to days
+                    hardInterval = '1d';
+                    goodInterval = '6d';
+                    easyInterval = '6d';
+                } else {
+                    // Normal SM-2 calculation for mature cards
+                    const hardEF = Math.max(1.3, easeFactor + (0.1 - (5 - 3) * (0.08 + (5 - 3) * 0.02)));
+                    const goodEF = Math.max(1.3, easeFactor + (0.1 - (5 - 4) * (0.08 + (5 - 4) * 0.02)));
+                    const easyEF = Math.max(1.3, easeFactor + (0.1 - (5 - 5) * (0.08 + (5 - 5) * 0.02)));
+                    
+                    hardInterval = formatInterval(Math.ceil(baseInterval * hardEF));
+                    goodInterval = formatInterval(Math.ceil(baseInterval * goodEF));
+                    easyInterval = formatInterval(Math.ceil(baseInterval * easyEF));
+                }
+            }
+            
+            const result = {
+                again: again,
+                hard: hardInterval,
+                good: goodInterval,
+                easy: easyInterval
+            };
+            
+            console.log('Calculated intervals:', result);
+            return result;
+            
+        } catch (error) {
+            console.error('Error calculating intervals:', error);
+            // Fallback to safe defaults
+            return {
+                again: 'now',
+                hard: '<6m',
+                good: '<10m',
+                easy: '4d'
+            };
+        }
+    }
+    
+    // Format interval in days to human readable format
+    function formatInterval(days) {
+        if (days === 1) return '1d';
+        if (days < 7) return `${days}d`;
+        if (days < 30) {
+            const weeks = Math.floor(days / 7);
+            const remainingDays = days % 7;
+            if (weeks === 1) {
+                return remainingDays === 0 ? '1w' : `1w${remainingDays}d`;
+            } else {
+                return remainingDays === 0 ? `${weeks}w` : `${weeks}w${remainingDays}d`;
+            }
+        }
+        const months = Math.floor(days / 30);
+        const remainingDays = days % 30;
+        if (months === 1) {
+            return remainingDays === 0 ? '1m' : `1m${remainingDays}d`;
+        } else {
+            return remainingDays === 0 ? `${months}m` : `${months}m${remainingDays}d`;
+        }
+    }
+    
+    // TTS is now handled by the global TTS manager (tts.js)
+    // The global click handler will automatically handle .tts-btn clicks
+    
+    // Handle keyboard shortcuts
+    function handleKeyboard(event) {
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+            return;
+        }
+        
+        switch(event.key) {
+            case ' ':
+            case 'Enter':
+                event.preventDefault();
+                const showBtn = document.querySelector('.show-answer-btn');
+                if (showBtn) showBtn.click();
+                break;
+            case '1':
+                event.preventDefault();
+                const btn1 = document.querySelector('[data-quality="1"]');
+                if (btn1) btn1.click();
+                break;
+            case '2':
+                event.preventDefault();
+                const btn2 = document.querySelector('[data-quality="3"]');
+                if (btn2) btn2.click();
+                break;
+            case '3':
+                event.preventDefault();
+                const btn3 = document.querySelector('[data-quality="4"]');
+                if (btn3) btn3.click();
+                break;
+            case '4':
+                event.preventDefault();
+                const btn4 = document.querySelector('[data-quality="5"]');
+                if (btn4) btn4.click();
+                break;
+        }
+    }
+    
+    // Start initialization when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeSRS);
+    } else {
+        initializeSRS();
+    }
+    
+})();
+</script>
+{% endblock %}

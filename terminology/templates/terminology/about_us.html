@@ -1,0 +1,63 @@
+{% extends 'terminology/base.html' %}
+{% load static %}
+
+{% block title %}About InterpAscend - Built for Interpreters, by an Interpreter{% endblock %}
+
+{% block description %}Learn about InterpAscend, the professional medical and legal terminology translator built for interpreters, by an interpreter. Discover our mission to provide accurate, context-aware translations for healthcare professionals and interpreters.{% endblock %}
+
+{% block og_title %}About InterpAscend - Professional Translation Tool for Interpreters{% endblock %}
+{% block og_description %}Built for interpreters, by an interpreter. InterpAscend provides accurate medical, legal, and professional terminology translations to bridge language barriers in critical situations.{% endblock %}
+{% block og_url %}https://interpascend.com/about/{% endblock %}
+
+{% block canonical_url %}https://interpascend.com/about/{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">About InterpAscend</h1>
+                    
+                    <div class="text-center mb-4">
+                        <img src="{% static 'terminology/images/home-light_transparent.png' %}"
+                             alt="InterpAscend Logo" 
+                             style="width: 120px; height: 120px; object-fit: contain;">
+                    </div>
+
+                    <h2>Our Mission</h2>
+                    <p>InterpAscend is a comprehensive medical and professional terminology translator designed to bridge language barriers in healthcare, legal, and government communications. We provide accurate, context-aware translations for medical interpreters, healthcare professionals, and individuals navigating complex terminology in Spanish and English.</p>
+
+                    <h2>What We Offer</h2>
+                    <ul>
+                        <li><strong>Medical Terminology:</strong> Comprehensive database of medications, diagnoses, and medical procedures</li>
+                        <li><strong>Healthcare Systems:</strong> Medicare and insurance terminology translations</li>
+                        <li><strong>Immigration & Legal:</strong> Government agency and immigration-related terms</li>
+                        <li><strong>Financial Services:</strong> Banking and financial terminology</li>
+                        <li><strong>MeSH Terms:</strong> Medical Subject Headings for research and clinical documentation</li>
+                        <li><strong>AI-Powered Translations:</strong> Advanced language models for terms not in our database</li>
+                    </ul>
+
+                    <h2>Why Choose InterpAscend?</h2>
+                    <ul>
+                        <li><strong>Accuracy:</strong> Professionally curated translations verified by subject matter experts</li>
+                        <li><strong>Context-Aware:</strong> Specialized terminology for specific domains and situations</li>
+                        <li><strong>Real-Time:</strong> Instant access to translations with audio pronunciation support</li>
+                        <li><strong>Comprehensive:</strong> Extensive database covering multiple professional domains</li>
+                        <li><strong>User-Friendly:</strong> Intuitive interface designed for professionals working under pressure</li>
+                    </ul>
+
+                    <h2>Our Commitment</h2>
+                    <p>We are committed to improving communication in critical situations where accurate translation can make the difference between confusion and clarity, between misunderstanding and successful outcomes. Our platform serves interpreters, healthcare workers, legal professionals, and anyone who needs reliable bilingual terminology.</p>
+
+                    <div class="text-center mt-4">
+                        <a href="{% url 'terminology:translate' %}" class="btn btn-primary">
+                            Start Translating
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

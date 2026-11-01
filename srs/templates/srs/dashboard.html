@@ -1,0 +1,133 @@
+{% extends 'terminology/base.html' %}
+{% load static %}
+
+{% block title %}Study Dashboard - InterpAscend{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="fas fa-graduation-cap me-2 text-primary"></i>
+                Welcome back, {{ user.username }}!
+            </h1>
+            <div>
+                <a href="{% url 'srs:category_list' %}" class="btn btn-primary">
+                    <i class="fas fa-play me-2"></i>
+                    Start Studying
+                </a>
+                <a href="{% url 'srs:user_stats' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    View Stats
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    Study Session
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Ready to continue your learning journey? Choose from our available study categories 
+                    and practice with spaced repetition to improve your retention.
+                </p>
+                <div class="alert alert-info">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    <strong>Tip:</strong> Regular daily practice, even for just 10-15 minutes, 
+                    is more effective than long, infrequent study sessions.
+                </div>
+                <a href="{% url 'srs:category_list' %}" class="btn btn-primary">
+                    <i class="fas fa-book-open me-2"></i>
+                    Browse Study Categories
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    How Spaced Repetition Works
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>Our system uses the SM-2 algorithm to optimize your learning:</p>
+                <ul>
+                    <li><strong>Adaptive Scheduling:</strong> Cards you find difficult appear more frequently</li>
+                    <li><strong>Long-term Retention:</strong> Successfully learned cards are reviewed at increasing intervals</li>
+                    <li><strong>Personalized Learning:</strong> Your individual performance shapes your study schedule</li>
+                    <li><strong>Efficient Practice:</strong> Focus your time on terms that need the most attention</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    Quick Stats
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-calendar-day fa-2x text-primary mb-2"></i>
+                        <div class="h4 mb-0">0</div>
+                        <small class="text-muted">Cards Due Today</small>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+                        <div class="h4 mb-0">0</div>
+                        <small class="text-muted">Total Reviews</small>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-trophy fa-2x text-warning mb-2"></i>
+                        <div class="h4 mb-0">0</div>
+                        <small class="text-muted">Study Streak</small>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Stats will update as you study
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-cog me-2"></i>
+                    Account
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'srs:user_stats' %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Detailed Statistics
+                    </a>
+                    <form method="post" action="{% url 'srs:logout' %}" style="display: inline; width: 100%;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
+                            <i class="fas fa-sign-out-alt me-2"></i>
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

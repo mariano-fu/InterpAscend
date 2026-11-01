@@ -1,0 +1,190 @@
+/* Polished Term Detail Card Styles */
+
+/* Favorites Button - Softer Golden Yellow */
+.favorite-btn,
+.js-add-fav {
+  background: linear-gradient(135deg, #FFD43B, #FFC107);
+  border: 2px solid #FFB300;
+  color: #1a1a1a !important;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 25px;
+  box-shadow: 0 2px 4px rgba(255, 212, 59, 0.3);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.favorite-btn:hover,
+.js-add-fav:hover {
+  background: linear-gradient(135deg, #FFC107, #FF8F00);
+  border-color: #FF8F00;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255, 212, 59, 0.4);
+  color: #1a1a1a !important;
+}
+
+.favorite-btn:focus,
+.js-add-fav:focus {
+  outline: 2px solid #FFD43B;
+  outline-offset: 2px;
+}
+
+/* Yes/No Feedback Buttons - Refined */
+.feedback-btn-yes,
+.btn-outline-success.feedback-btn {
+  background: #28a745;
+  border: 2px solid #28a745;
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(40, 167, 69, 0.3);
+  transition: all 0.2s ease;
+}
+
+.feedback-btn-yes:hover,
+.btn-outline-success.feedback-btn:hover {
+  background: #34ce57;
+  border-color: #34ce57;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(40, 167, 69, 0.4);
+}
+
+.feedback-btn-yes:focus,
+.btn-outline-success.feedback-btn:focus {
+  outline: 2px solid #28a745;
+  outline-offset: 2px;
+}
+
+.feedback-btn-no,
+.btn-outline-danger.feedback-btn {
+  background: #dc3545;
+  border: 2px solid #dc3545;
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(220, 53, 69, 0.3);
+  transition: all 0.2s ease;
+}
+
+.feedback-btn-no:hover,
+.btn-outline-danger.feedback-btn:hover {
+  background: #e4606d;
+  border-color: #e4606d;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
+}
+
+.feedback-btn-no:focus,
+.btn-outline-danger.feedback-btn:focus {
+  outline: 2px solid #dc3545;
+  outline-offset: 2px;
+}
+
+/* Feedback Box - Subtle Depth */
+.feedback-box,
+.term-feedback-widget {
+  background: rgba(45, 55, 72, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+/* Feedback Label - Bold and Bright */
+.feedback-label,
+.feedback-question h6 {
+  font-weight: 700 !important;
+  color: #e2e8f0 !important;
+  margin-bottom: 0.75rem;
+}
+
+/* Back Button - Consistent Pill Style */
+.back-btn,
+.btn-outline-primary {
+  background: #007bff;
+  border: 2px solid #007bff;
+  color: #ffffff !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 123, 255, 0.3);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.back-btn:hover,
+.btn-outline-primary:hover {
+  background: #0056b3;
+  border-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.4);
+  color: #ffffff !important;
+}
+
+.back-btn:focus,
+.btn-outline-primary:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Light Theme Adaptations */
+@media (prefers-color-scheme: light) {
+  .favorite-btn,
+  .js-add-fav {
+    background: linear-gradient(135deg, #FFB300, #FF8F00);
+    border-color: #FF6F00;
+    color: #ffffff !important;
+  }
+
+  .favorite-btn:hover,
+  .js-add-fav:hover {
+    background: linear-gradient(135deg, #FF8F00, #E65100);
+    border-color: #E65100;
+    color: #ffffff !important;
+  }
+
+  .feedback-box,
+  .term-feedback-widget {
+    background: rgba(248, 249, 250, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .feedback-label,
+  .feedback-question h6 {
+    color: #1a202c !important;
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .favorite-btn,
+  .js-add-fav {
+    font-size: 0;
+    padding: 0.75rem;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .favorite-btn::after,
+  .js-add-fav::after {
+    content: "⭐";
+    font-size: 1.1rem;
+    display: inline-block;
+  }
+
+  .feedback-btn-yes,
+  .feedback-btn-no,
+  .btn-outline-success.feedback-btn,
+  .btn-outline-danger.feedback-btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}

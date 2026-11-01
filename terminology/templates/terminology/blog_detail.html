@@ -1,0 +1,173 @@
+{% extends "terminology/base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }} - InterpAscend Blog{% endblock %}
+
+{% block content %}
+<article class="container mx-auto px-4 py-8">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-4xl font-bold mb-6 text-gray-800">{{ post.title }}</h1>
+        
+        <div class="flex flex-wrap items-center text-gray-500 mb-8 text-sm">
+            <span>
+                Written by {{ post.author }} on {{ post.created_at|date:"F jS, Y" }}
+            </span>
+        </div>
+
+        {% if post.featured_image %}
+        <div class="mb-8 bg-gray-900 rounded-xl overflow-hidden">
+            <div class="featured-image-container">
+                <img 
+                    src="{{ post.featured_image.url }}" 
+                    alt="{{ post.title }}" 
+                    class="featured-image"
+                    loading="lazy"
+                >
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="prose prose-lg max-w-none prose-gray prose-headings:text-gray-800 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline">
+            {% if '<' in post.content and '>' in post.content %}
+                {{ post.content|safe }}
+            {% else %}
+                {{ post.content|linebreaks }}
+            {% endif %}
+        </div>
+
+        <div class="mt-12 border-t pt-6">
+            <a href="{% url 'terminology:blog_list' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">
+                ← Back to Blog
+            </a>
+        </div>
+    </div>
+</article>
+
+<style>
+    /* Featured image container styles */
+    .featured-image-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        max-height: 600px;
+    }
+
+    .featured-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        max-height: 600px;
+    }
+
+    /* Content image styles */
+    .prose img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 1.5rem auto;
+        border-radius: 0.5rem;
+        object-fit: contain;
+    }
+    
+    /* Rich text editor content styles */
+    .prose {
+        line-height: 1.7;
+    }
+    
+    .prose strong, .prose b {
+        font-weight: 700;
+    }
+    
+    .prose em, .prose i {
+        font-style: italic;
+    }
+    
+    .prose u {
+        text-decoration: underline;
+    }
+    
+    .prose s, .prose strike {
+        text-decoration: line-through;
+    }
+    
+    /* Font size support for rich text */
+    .prose span[style*="font-size"] {
+        line-height: inherit;
+    }
+    
+    /* Color support */
+    .prose span[style*="color"] {
+        /* Inherit other styles while preserving color */
+    }
+    
+    /* Table styles for rich text */
+    .prose table {
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        width: 100%;
+    }
+    
+    .prose table td, .prose table th {
+        border: 1px solid #e5e7eb;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    
+    .prose table th {
+        background-color: #f9fafb;
+        font-weight: 600;
+    }
+    
+    /* Mobile-specific adjustments */
+    @media (max-width: 640px) {
+        .prose {
+            font-size: 1rem;
+        }
+        
+        .prose h1 {
+            font-size: 1.875rem;
+        }
+        
+        .prose h2 {
+            font-size: 1.5rem;
+        }
+        
+        .prose h3 {
+            font-size: 1.25rem;
+        }
+
+        .featured-image-container {
+            max-height: 400px;
+        }
+
+        .featured-image {
+            max-height: 400px;
+        }
+        
+        /* Responsive table */
+        .prose table {
+            font-size: 0.875rem;
+        }
+        
+        .prose table td, .prose table th {
+            padding: 0.25rem;
+        }
+    }
+</style>
+
+<!-- Alternative version without aspect-ratio (comment out the above image section and use this instead if needed) -->
+<!-- 
+{% if post.featured_image %}
+<div class="mb-8 bg-gray-900 rounded-xl overflow-hidden">
+    <img 
+        src="{{ post.featured_image.url }}" 
+        alt="{{ post.title }}" 
+        class="w-full h-auto max-h-72 sm:max-h-80 md:max-h-96 object-cover rounded-lg"
+        loading="lazy"
+    >
+</div>
+{% endif %}
+-->
+
+{% endblock %}

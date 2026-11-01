@@ -1,0 +1,146 @@
+{% extends 'terminology/base.html' %}
+{% load static %}
+
+{% block title %}Study Categories - InterpAscend{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="fas fa-list me-2 text-primary"></i>
+                Study Categories
+            </h1>
+            <a href="{% url 'srs:dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if category_stats %}
+    <div class="row">
+        {% for stat in category_stats %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-{{ stat.category.color_class }}">
+                    <div class="card-header bg-{{ stat.category.color_class }} text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="{{ stat.category.icon_class }} me-2"></i>
+                            {{ stat.category.name }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if stat.category.description %}
+                            <p class="card-text text-muted small mb-3">
+                                {{ stat.category.description }}
+                            </p>
+                        {% endif %}
+                        
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <div class="h4 mb-0 text-danger">{{ stat.due_count }}</div>
+                                <small class="text-muted">Due</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="h4 mb-0 text-primary">{{ stat.total_cards }}</div>
+                                <small class="text-muted">Total</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="h4 mb-0 text-success">{{ stat.deck_count }}</div>
+                                <small class="text-muted">Decks</small>
+                            </div>
+                        </div>
+                        
+                        {% if stat.new_cards > 0 %}
+                            <div class="alert alert-info py-2 mb-3">
+                                <small>
+                                    <i class="fas fa-plus-circle me-1"></i>
+                                    {{ stat.new_cards }} new card{{ stat.new_cards|pluralize }} added
+                                </small>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        {% if stat.due_count > 0 %}
+                            <a href="{% url 'srs:study_session' stat.category.slug %}"
+                               class="btn btn-{{ stat.category.color_class }} w-100">
+                                <i class="fas fa-play me-2"></i>
+                                Study Now ({{ stat.due_count }} due)
+                            </a>
+                        {% elif stat.total_cards > 0 %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-check-circle me-2"></i>
+                                All caught up! Next review later.
+                            </div>
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-info-circle me-2"></i>
+                                No cards available yet.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>No study categories available yet.</strong>
+                Categories will appear here once they are created by an administrator.
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-graduation-cap me-2"></i>
+                        Getting Started
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>To start studying, an administrator needs to:</p>
+                    <ol>
+                        <li>Create study categories in the Django admin</li>
+                        <li>Create decks within those categories</li>
+                        <li>Add flashcards linking to terminology from your database</li>
+                    </ol>
+                    <p class="mb-0">
+                        <a href="/admin/" class="btn btn-outline-primary" target="_blank">
+                            <i class="fas fa-cog me-2"></i>
+                            Open Django Admin
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Study Tips
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-clock me-2 text-primary"></i>Consistency is Key</h6>
+                        <p class="small">Study a little bit every day rather than cramming. Even 10-15 minutes daily is more effective than long, infrequent sessions.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-brain me-2 text-success"></i>Trust the Algorithm</h6>
+                        <p class="small">The spaced repetition system will show you cards when you're about to forget them. Focus on the cards that are due.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

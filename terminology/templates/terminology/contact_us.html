@@ -1,0 +1,45 @@
+{% extends 'terminology/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">Contact Us</h1>
+                    
+                    <div class="text-center">
+                        <h2>Get in Touch</h2>
+                        <p class="lead">We're here to help you with any questions about InterpAscend. Whether you need technical support, have suggestions for new features, or want to report an issue, we'd love to hear from you.</p>
+                        
+                        <div class="mt-4 mb-4">
+                            <h3>Contact Information</h3>
+                            <p><strong>Email:</strong> <a href="mailto:contact@interpascend.com">contact@interpascend.com</a></p>
+                            <p><strong>Response Time:</strong> One to two business days</p>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h3>Subject Line Suggestions</h3>
+                            <p>To help us route your message effectively, please consider including one of these prefixes in your subject line:</p>
+                            <ul class="list-unstyled">
+                                <li><strong>[TECHNICAL]</strong> - For technical support issues</li>
+                                <li><strong>[SUGGESTION]</strong> - For content suggestions or new feature requests</li>
+                                <li><strong>[ERROR]</strong> - For reporting translation errors or bugs</li>
+                                <li><strong>[BUSINESS]</strong> - For business inquiries or partnerships</li>
+                                <li><strong>[FEEDBACK]</strong> - For general feedback</li>
+                                <li><strong>[URGENT]</strong> - For urgent technical issues</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{% url 'terminology:translate' %}" class="btn btn-primary">
+                            ← Back to Translator
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

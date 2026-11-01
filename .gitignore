@@ -1,0 +1,44 @@
+# Byte-compiled, optimized, DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+local_settings.py
+
+# Debug and temporary files
+csrf_debug.log
+
+# Data exports
+*.csv
+
+# Virtual environments
+venv/
+env/
+.env/
+
+# Environment variables (IMPORTANT: Keep secrets safe!)
+.env
+.env.local
+.env.*.local
+
+# IDE settings
+.vscode/
+.idea/
+
+# Text-to-speech audio files
+static/terminology/tts/
+*.mp3
+*.wav
+*.ogg
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db

@@ -1,0 +1,100 @@
+{% extends "terminology/base.html" %}
+{% load static %}
+
+{% block title %}Blog - InterpAscend{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-12 text-center text-gray-800">InterpAscend Blog</h1>
+    
+    <div class="max-w-4xl mx-auto">
+        {% for post in posts %}
+        <article class="mb-12 bg-gray-800 rounded-xl shadow-md overflow-hidden">
+            {% if post.featured_image %}
+            <div class="relative w-full bg-gray-900">
+                <div class="list-image-container">
+                    <img 
+                        src="{{ post.featured_image.url }}" 
+                        alt="{{ post.title }}" 
+                        class="list-featured-image"
+                        loading="lazy"
+                    >
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="p-6">
+                <h2 class="text-2xl font-bold mb-3 text-gray-100">
+                    {{ post.title }}
+                </h2>
+                
+                <div class="flex items-center text-gray-400 text-sm mb-4">
+                    <time datetime="{{ post.created_at|date:'Y-m-d' }}">
+                        {{ post.created_at|date:"F j, Y" }}
+                    </time>
+                    <span class="mx-2">•</span>
+                    <span>Written by {{ post.author }}</span>
+                </div>
+                
+                <div class="prose prose-lg text-gray-300 mb-6">
+                    {{ post.content|truncatewords:30|safe }}
+                </div>
+                
+                <a href="{% url 'terminology:blog_detail' post.slug %}" 
+                   class="inline-flex items-center text-blue-400 hover:text-blue-300 font-semibold">
+                    Read more 
+                    →
+                </a>
+            </div>
+        </article>
+        {% empty %}
+        <div class="text-center py-12">
+            <p class="text-gray-600 text-lg">No blog posts available yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    /* Blog list image styles */
+    .list-image-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        max-height: 400px;
+    }
+
+    .list-featured-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        max-height: 400px;
+    }
+    
+    /* Mobile-specific adjustments */
+    @media (max-width: 640px) {
+        .list-image-container {
+            max-height: 250px;
+        }
+        
+        .list-featured-image {
+            max-height: 250px;
+        }
+    }
+</style>
+
+<!-- Alternative version without aspect-ratio (comment out the above image section and use this instead if needed) -->
+<!-- 
+{% if post.featured_image %}
+<div class="relative w-full bg-gray-900">
+    <img 
+        src="{{ post.featured_image.url }}" 
+        alt="{{ post.title }}" 
+        class="w-full h-auto max-h-64 sm:max-h-80 md:max-h-96 object-cover"
+        loading="lazy"
+    >
+</div>
+{% endif %}
+-->
+{% endblock %}

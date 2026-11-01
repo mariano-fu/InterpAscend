@@ -1,0 +1,413 @@
+{% extends 'terminology/base.html' %}
+{% load static %}
+
+{% block title %}Your Progress - InterpAscend{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .stats-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .progress-ring {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .progress-ring circle {
+        transition: stroke-dasharray 0.5s ease;
+    }
+    
+    .category-progress {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .streak-badge {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        display: inline-block;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin: 20px 0;
+    }
+    
+    .recent-activity {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .activity-item {
+        border-left: 3px solid #007bff;
+        padding-left: 15px;
+        margin-bottom: 15px;
+        position: relative;
+    }
+    
+    .activity-item::before {
+        content: '';
+        position: absolute;
+        left: -6px;
+        top: 8px;
+        width: 9px;
+        height: 9px;
+        background: #007bff;
+        border-radius: 50%;
+    }
+    
+    .quality-badge {
+        font-size: 0.8em;
+        padding: 2px 6px;
+        border-radius: 3px;
+    }
+    
+    .quality-0, .quality-1 { background: #dc3545; color: white; }
+    .quality-2, .quality-3 { background: #ffc107; color: black; }
+    .quality-4 { background: #28a745; color: white; }
+    .quality-5 { background: #007bff; color: white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="fas fa-chart-line me-2 text-primary"></i>
+                Your Progress
+            </h1>
+            <div class="d-flex gap-2">
+                <a href="{% url 'srs:category_list' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-list me-2"></i>
+                    Study Categories
+                </a>
+                <a href="{% url 'srs:dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-home me-2"></i>
+                    Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overall Statistics -->
+<div class="row mb-4">
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card stats-card h-100">
+            <div class="card-body text-center">
+                <div class="mb-2">
+                    <i class="fas fa-cards-blank text-primary" style="font-size: 2rem;"></i>
+                </div>
+                <h3 class="text-primary mb-1">{{ overall_stats.total_cards }}</h3>
+                <p class="text-muted mb-0">Total Cards</p>
+                <small class="text-success">
+                    <i class="fas fa-plus me-1"></i>
+                    {{ overall_stats.new_cards }} new
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card stats-card h-100">
+            <div class="card-body text-center">
+                <div class="mb-2">
+                    <i class="fas fa-clock text-warning" style="font-size: 2rem;"></i>
+                </div>
+                <h3 class="text-warning mb-1">{{ overall_stats.due_cards }}</h3>
+                <p class="text-muted mb-0">Due Today</p>
+                <small class="text-info">
+                    <i class="fas fa-calendar me-1"></i>
+                    Ready to study
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card stats-card h-100">
+            <div class="card-body text-center">
+                <div class="mb-2">
+                    <i class="fas fa-trophy text-success" style="font-size: 2rem;"></i>
+                </div>
+                <h3 class="text-success mb-1">{{ overall_stats.success_rate }}%</h3>
+                <p class="text-muted mb-0">Success Rate</p>
+                <small class="text-muted">
+                    <i class="fas fa-chart-line me-1"></i>
+                    Last 30 days
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card stats-card h-100">
+            <div class="card-body text-center">
+                <div class="mb-2">
+                    <i class="fas fa-fire text-danger" style="font-size: 2rem;"></i>
+                </div>
+                <h3 class="text-danger mb-1">{{ overall_stats.study_streak }}</h3>
+                <p class="text-muted mb-0">Day Streak</p>
+                {% if overall_stats.study_streak > 0 %}
+                    <span class="streak-badge">
+                        <i class="fas fa-fire me-1"></i>
+                        On fire!
+                    </span>
+                {% else %}
+                    <small class="text-muted">Start studying today!</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Daily Review Activity (Last 14 Days)
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="dailyReviewsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-brain me-2"></i>
+                    Learning Stats
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Mature Cards</span>
+                        <span class="fw-bold">{{ overall_stats.mature_cards }}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: {% widthratio overall_stats.mature_cards overall_stats.total_cards 100 %}%"></div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Young Cards</span>
+                        <span class="fw-bold">{{ overall_stats.young_cards }}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-warning" style="width: {% widthratio overall_stats.young_cards overall_stats.total_cards 100 %}%"></div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Average Ease Factor</span>
+                        <span class="fw-bold">{{ overall_stats.average_ease_factor }}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-info" style="width: {% widthratio overall_stats.average_ease_factor 5.0 100 %}%"></div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Retention Rate: {{ overall_stats.retention_estimate }}%
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Progress -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-layer-group me-2"></i>
+                    Progress by Category
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if category_progress %}
+                    <div class="row">
+                        {% for cp in category_progress %}
+                            <div class="col-lg-6 mb-3">
+                                <div class="category-progress">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-{{ cp.category.icon|default:'book' }} me-2"></i>
+                                            {{ cp.category.name }}
+                                        </h6>
+                                        <span class="badge bg-primary">{{ cp.success_rate }}% success</span>
+                                    </div>
+                                    
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <div class="text-primary fw-bold">{{ cp.total_cards }}</div>
+                                            <small class="text-muted">Total</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="text-warning fw-bold">{{ cp.due_cards }}</div>
+                                            <small class="text-muted">Due</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="text-success fw-bold">{{ cp.recent_reviews }}</div>
+                                            <small class="text-muted">Recent</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="progress mt-2" style="height: 6px;">
+                                        {% if cp.total_cards > 0 %}
+                                            {% widthratio cp.total_cards cp.due_cards 100 as progress_percent %}
+                                            <div class="progress-bar bg-success"
+                                                 style="width: {% if progress_percent > 100 %}100{% else %}{{ progress_percent }}{% endif %}%"
+                                                 title="Progress"></div>
+                                        {% else %}
+                                            <div class="progress-bar bg-success" style="width: 0%"></div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-pie text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">No Study Data Yet</h5>
+                        <p class="text-muted">Start studying to see your progress here!</p>
+                        <a href="{% url 'srs:category_list' %}" class="btn btn-primary">
+                            <i class="fas fa-play me-2"></i>
+                            Start Studying
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-history me-2"></i>
+                    Recent Activity
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_reviews %}
+                    <div class="recent-activity">
+                        {% for review in recent_reviews %}
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ review.deck_item.term_content_object }}</strong>
+                                        <span class="quality-badge quality-{{ review.quality }}">
+                                            {% if review.quality <= 1 %}Again{% elif review.quality <= 3 %}Hard{% elif review.quality == 4 %}Good{% else %}Easy{% endif %}
+                                        </span>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="fas fa-layer-group me-1"></i>
+                                            {{ review.deck_item.deck.category.name }} • {{ review.deck_item.deck.name }}
+                                            {% if review.latency_ms %}
+                                                • {{ review.latency_ms|floatformat:0 }}ms
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <small class="text-muted">
+                                        {{ review.reviewed_at|timesince }} ago
+                                    </small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-clock text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">No Recent Activity</h5>
+                        <p class="text-muted">Your study sessions will appear here.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chartData = {{ chart_data_json|safe }};
+    
+    // Daily Reviews Chart
+    const dailyCtx = document.getElementById('dailyReviewsChart').getContext('2d');
+    new Chart(dailyCtx, {
+        type: 'bar',
+        data: {
+            labels: chartData.daily_reviews.labels.map(date => {
+                const d = new Date(date);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }),
+            datasets: [{
+                label: 'Reviews',
+                data: chartData.daily_reviews.data,
+                backgroundColor: 'rgba(0, 123, 255, 0.8)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1,
+                borderRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

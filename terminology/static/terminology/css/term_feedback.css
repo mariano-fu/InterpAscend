@@ -1,0 +1,247 @@
+/* Term Feedback Widget Styles - Enhanced for Better Legibility */
+.term-feedback-widget {
+    background: rgba(45, 55, 72, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    padding: 1.25rem;
+}
+
+.term-feedback-widget:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.feedback-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.feedback-buttons .btn {
+    min-width: 140px;
+    flex: 1;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-buttons .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-comment {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.feedback-comment:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.char-count {
+    font-weight: 500;
+}
+
+.feedback-success .alert {
+    border-left: 4px solid #28a745;
+}
+
+.feedback-error .alert {
+    border-left: 4px solid #ffc107;
+}
+
+.feedback-loading {
+    padding: 1rem;
+    text-align: center;
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Enhanced Feedback Button Styles */
+.btn-outline-success.feedback-btn {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    border: 2px solid #38a169;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(56, 161, 105, 0.3);
+}
+
+.btn-outline-success.feedback-btn:hover {
+    background: linear-gradient(135deg, #38a169, #2f855a);
+    border-color: #2f855a;
+    box-shadow: 0 4px 12px rgba(56, 161, 105, 0.4);
+}
+
+.btn-outline-danger.feedback-btn {
+    background: linear-gradient(135deg, #f56565, #e53e3e);
+    border: 2px solid #e53e3e;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(229, 62, 62, 0.3);
+}
+
+.btn-outline-danger.feedback-btn:hover {
+    background: linear-gradient(135deg, #e53e3e, #c53030);
+    border-color: #c53030;
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.4);
+}
+
+/* Enhanced Feedback Label */
+.feedback-question h6 {
+    font-weight: 700 !important;
+    font-size: 1rem;
+    color: #e2e8f0 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1rem;
+    letter-spacing: 0.025em;
+}
+
+/* Light theme support */
+body.morning .term-feedback-widget,
+body.afternoon .term-feedback-widget {
+    background: rgba(248, 250, 252, 0.95);
+    border: 2px solid rgba(0, 0, 0, 0.12);
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+body.morning .term-feedback-widget:hover,
+body.afternoon .term-feedback-widget:hover {
+    border-color: rgba(0, 0, 0, 0.18);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body.morning .feedback-question h6,
+body.afternoon .feedback-question h6 {
+    color: #1a202c !important;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+body.morning .btn-outline-success.feedback-btn,
+body.afternoon .btn-outline-success.feedback-btn {
+    background: linear-gradient(135deg, #38a169, #2f855a);
+    border-color: #2f855a;
+}
+
+body.morning .btn-outline-danger.feedback-btn,
+body.afternoon .btn-outline-danger.feedback-btn {
+    background: linear-gradient(135deg, #e53e3e, #c53030);
+    border-color: #c53030;
+}
+
+/* Dark mode support - Enhanced */
+@media (prefers-color-scheme: dark) {
+    .term-feedback-widget {
+        background: rgba(45, 55, 72, 0.95);
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        color: #e2e8f0;
+    }
+    
+    .term-feedback-widget:hover {
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+    
+    .feedback-comment {
+        background-color: rgba(45, 55, 72, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #e2e8f0;
+    }
+    
+    .feedback-comment::placeholder {
+        color: #a0aec0;
+    }
+}
+
+/* Responsive design - Enhanced */
+@media (max-width: 768px) {
+    .feedback-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .feedback-buttons .btn {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0;
+    }
+    
+    .term-feedback-widget {
+        margin-left: -0.5rem;
+        margin-right: -0.5rem;
+        border-radius: 8px;
+        padding: 1rem;
+    }
+}
+
+/* Focus indicators for accessibility */
+.feedback-btn:focus {
+    outline: 3px solid rgba(66, 153, 225, 0.5);
+    outline-offset: 2px;
+}
+
+.btn-outline-success.feedback-btn:focus {
+    outline-color: rgba(56, 161, 105, 0.5);
+}
+
+.btn-outline-danger.feedback-btn:focus {
+    outline-color: rgba(229, 62, 62, 0.5);
+}
+
+.term-feedback-widget:focus-within {
+    outline: 3px solid var(--link-color);
+    outline-offset: 2px;
+}
+
+/* Animation for state transitions */
+.feedback-question,
+.feedback-comment-section,
+.feedback-success,
+.feedback-error,
+.feedback-loading {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Button state animations */
+.feedback-btn.btn-success,
+.feedback-btn.btn-danger {
+    animation: buttonSelect 0.2s ease-in-out;
+}
+
+@keyframes buttonSelect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

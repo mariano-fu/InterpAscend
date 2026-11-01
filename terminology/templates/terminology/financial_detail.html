@@ -1,0 +1,76 @@
+{% extends "terminology/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <h2 class="card-title mb-0">{{ object.english_term }}</h2>
+        <button
+          class="btn btn-outline-primary js-add-fav"
+          data-src="{{ object.english_term }}"
+          data-tgt="{{ object.spanish_term }}"
+          data-srclang="en"
+          data-tgtlang="es"
+          data-domain="financial"
+          aria-label="Add to favorites">
+          ⭐ Add to Favorites
+        </button>
+      </div>
+
+      <!-- Phonetic Spellings -->
+      {% if object.english_phonetic or object.spanish_phonetic %}
+      <div class="phonetic-container">
+        {% if object.english_phonetic %}
+        <div class="phonetic-spelling english">
+          <span class="phonetic-label">🇺🇸 Pronunciation (EN):</span>
+          <span class="phonetic-text">/{{ object.english_phonetic }}/</span>
+        </div>
+        {% endif %}
+        
+        {% if object.spanish_phonetic %}
+        <div class="phonetic-spelling spanish">
+          <span class="phonetic-label">🇪🇸 Pronunciación (ES):</span>
+          <span class="phonetic-text">/{{ object.spanish_phonetic }}/</span>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if object.spanish_term %}
+      <p class="card-text"><strong>Spanish:</strong> {{ object.spanish_term }}</p>
+      {% endif %}
+
+      {# TTS Audio Players #}
+      {% if audio_en %}
+      <div class="mt-3">
+        <p class="mb-1"><strong>Pronunciation (EN):</strong></p>
+        <audio controls src="{% static audio_en %}">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+      {% endif %}
+
+      {% if audio_es %}
+      <div class="mt-3">
+        <p class="mb-1"><strong>Pronunciation (ES):</strong></p>
+        <audio controls src="{% static audio_es %}">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+      {% endif %}
+
+      <!-- Term Helpfulness Feedback Widget -->
+      {% include 'terminology/_term_feedback_widget.html' with term_id=object.id term_type='financial' term_reference=object.english_term %}
+
+      <a
+        href="{% url 'terminology:translate' %}?query={{ request.GET.query|urlencode }}&match_type={{ request.GET.match_type }}"
+        class="btn btn-outline-primary mt-4"
+      >
+        ← Back to search results
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

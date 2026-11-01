@@ -1,0 +1,73 @@
+{% extends "terminology/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <h2 class="mb-0">{{ object.english_name }} / {{ object.spanish_name }}</h2>
+    <button
+      class="btn btn-outline-primary js-add-fav"
+      data-src="{{ object.english_name }}"
+      data-tgt="{{ object.spanish_name }}"
+      data-srclang="en"
+      data-tgtlang="es"
+      data-domain="government"
+      aria-label="Add to favorites">
+      ⭐ Add to Favorites
+    </button>
+  </div>
+
+  <!-- Phonetic Spellings -->
+  {% if object.english_phonetic or object.spanish_phonetic %}
+  <div class="phonetic-container">
+    {% if object.english_phonetic %}
+    <div class="phonetic-spelling english">
+      <span class="phonetic-label">🇺🇸 Pronunciation (EN):</span>
+      <span class="phonetic-text">/{{ object.english_phonetic }}/</span>
+    </div>
+    {% endif %}
+    
+    {% if object.spanish_phonetic %}
+    <div class="phonetic-spelling spanish">
+      <span class="phonetic-label">🇪🇸 Pronunciación (ES):</span>
+      <span class="phonetic-text">/{{ object.spanish_phonetic }}/</span>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% if audio_en or audio_es %}
+    <div class="row mb-4">
+      {% if audio_en %}
+        <div class="col-auto me-3">
+          <label class="form-label">Pronunciation (EN):</label>
+          <audio controls>
+            <source src="{% static audio_en %}" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      {% endif %}
+      {% if audio_es %}
+        <div class="col-auto">
+          <label class="form-label">Pronunciation (ES):</label>
+          <audio controls>
+            <source src="{% static audio_es %}" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <!-- Term Helpfulness Feedback Widget -->
+  {% include 'terminology/_term_feedback_widget.html' with term_id=object.id term_type='agency' term_reference=object.english_name %}
+
+  <a
+    href="{% url 'terminology:translate' %}?query={{ request.GET.query|urlencode }}&match_type={{ request.GET.match_type }}"
+    class="btn btn-secondary mt-3"
+  >
+    ← Back to Search
+  </a>
+</div>
+{% endblock %}
+

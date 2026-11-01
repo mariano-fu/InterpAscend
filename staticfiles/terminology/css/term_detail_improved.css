@@ -1,0 +1,391 @@
+/* ================================================
+   Improved Term Detail Card UI Styles
+   Addresses legibility and accessibility issues
+   ================================================ */
+
+/* ================================================
+   1. Term Card Base Styles
+   ================================================ */
+.term-card {
+  background-color: #4a627a;
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.term-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Light theme term card */
+body.morning .term-card,
+body.afternoon .term-card {
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.morning .term-card:hover,
+body.afternoon .term-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================================
+   2. Feedback Box Improvements
+   ================================================ */
+.feedback-box,
+.term-feedback-widget {
+  background: rgba(45, 55, 72, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+}
+
+.feedback-box:hover,
+.term-feedback-widget:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Light theme feedback box */
+body.morning .feedback-box,
+body.morning .term-feedback-widget,
+body.afternoon .feedback-box,
+body.afternoon .term-feedback-widget {
+  background: rgba(248, 250, 252, 0.95);
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+body.morning .feedback-box:hover,
+body.morning .term-feedback-widget:hover,
+body.afternoon .feedback-box:hover,
+body.afternoon .term-feedback-widget:hover {
+  border-color: rgba(0, 0, 0, 0.18);
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* ================================================
+   3. Feedback Label Improvements
+   ================================================ */
+.feedback-label,
+.feedback-question h6 {
+  font-weight: 700 !important;
+  font-size: 1rem;
+  color: #e2e8f0 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  margin-bottom: 1rem;
+  letter-spacing: 0.025em;
+}
+
+/* Light theme feedback label */
+body.morning .feedback-label,
+body.morning .feedback-question h6,
+body.afternoon .feedback-label,
+body.afternoon .feedback-question h6 {
+  color: #1a202c !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* ================================================
+   4. Feedback Button Improvements
+   ================================================ */
+.feedback-btn-yes,
+.feedback-btn[data-helpful="true"],
+.btn-outline-success.feedback-btn {
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  border: 2px solid #38a169;
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(56, 161, 105, 0.3);
+  transition: all 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-btn-yes:hover,
+.feedback-btn[data-helpful="true"]:hover,
+.btn-outline-success.feedback-btn:hover {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+  border-color: #2f855a;
+  box-shadow: 0 4px 12px rgba(56, 161, 105, 0.4);
+  transform: translateY(-2px);
+}
+
+.feedback-btn-yes:focus,
+.feedback-btn[data-helpful="true"]:focus,
+.btn-outline-success.feedback-btn:focus {
+  outline: 3px solid rgba(56, 161, 105, 0.5);
+  outline-offset: 2px;
+}
+
+.feedback-btn-no,
+.feedback-btn[data-helpful="false"],
+.btn-outline-danger.feedback-btn {
+  background: linear-gradient(135deg, #f56565, #e53e3e);
+  border: 2px solid #e53e3e;
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(229, 62, 62, 0.3);
+  transition: all 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-btn-no:hover,
+.feedback-btn[data-helpful="false"]:hover,
+.btn-outline-danger.feedback-btn:hover {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+  border-color: #c53030;
+  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.4);
+  transform: translateY(-2px);
+}
+
+.feedback-btn-no:focus,
+.feedback-btn[data-helpful="false"]:focus,
+.btn-outline-danger.feedback-btn:focus {
+  outline: 3px solid rgba(229, 62, 62, 0.5);
+  outline-offset: 2px;
+}
+
+/* Light theme feedback buttons - slightly darker for better contrast */
+body.morning .feedback-btn-yes,
+body.morning .feedback-btn[data-helpful="true"],
+body.morning .btn-outline-success.feedback-btn,
+body.afternoon .feedback-btn-yes,
+body.afternoon .feedback-btn[data-helpful="true"],
+body.afternoon .btn-outline-success.feedback-btn {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+  border-color: #2f855a;
+}
+
+body.morning .feedback-btn-no,
+body.morning .feedback-btn[data-helpful="false"],
+body.morning .btn-outline-danger.feedback-btn,
+body.afternoon .feedback-btn-no,
+body.afternoon .feedback-btn[data-helpful="false"],
+body.afternoon .btn-outline-danger.feedback-btn {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+  border-color: #c53030;
+}
+
+/* ================================================
+   5. Add to Favorites Button - Pill Style with Yellow Highlight
+   ================================================ */
+.favorite-btn,
+.js-add-fav,
+.btn-outline-primary.js-add-fav {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border: 2px solid #f6d55c;
+  color: #1a202c !important;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px; /* Pill shape */
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.favorite-btn::before,
+.js-add-fav::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.favorite-btn:hover,
+.js-add-fav:hover {
+  background: linear-gradient(135deg, #ffed4e, #fbbf24);
+  border-color: #f59e0b;
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.favorite-btn:hover::before,
+.js-add-fav:hover::before {
+  left: 100%;
+}
+
+.favorite-btn:focus,
+.js-add-fav:focus {
+  outline: 3px solid rgba(255, 215, 0, 0.6);
+  outline-offset: 2px;
+}
+
+.favorite-btn:active,
+.js-add-fav:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+}
+
+/* Light theme favorites button - slightly different yellow for better contrast */
+body.morning .favorite-btn,
+body.morning .js-add-fav,
+body.afternoon .favorite-btn,
+body.afternoon .js-add-fav {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: #d97706;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+body.morning .favorite-btn:hover,
+body.morning .js-add-fav:hover,
+body.afternoon .favorite-btn:hover,
+body.afternoon .js-add-fav:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border-color: #b45309;
+}
+
+/* ================================================
+   6. Mobile Responsiveness
+   ================================================ */
+@media (max-width: 768px) {
+  .feedback-box,
+  .term-feedback-widget {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  
+  .feedback-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .feedback-btn-yes,
+  .feedback-btn-no,
+  .feedback-btn[data-helpful="true"],
+  .feedback-btn[data-helpful="false"] {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .favorite-btn,
+  .js-add-fav {
+    font-size: 0;
+    padding: 0.75rem;
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .favorite-btn::after,
+  .js-add-fav::after {
+    content: "⭐";
+    font-size: 1.25rem;
+    display: inline-block;
+  }
+}
+
+/* ================================================
+   7. High Contrast Mode Support
+   ================================================ */
+@media (prefers-contrast: high) {
+  .feedback-box,
+  .term-feedback-widget {
+    border-width: 3px;
+    border-color: currentColor;
+  }
+  
+  .feedback-btn-yes,
+  .feedback-btn-no,
+  .favorite-btn {
+    border-width: 3px;
+    font-weight: 800;
+  }
+  
+  .feedback-label,
+  .feedback-question h6 {
+    font-weight: 900 !important;
+  }
+}
+
+/* ================================================
+   8. Reduced Motion Support
+   ================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .feedback-box,
+  .term-feedback-widget,
+  .feedback-btn-yes,
+  .feedback-btn-no,
+  .favorite-btn,
+  .js-add-fav {
+    transition: none;
+  }
+  
+  .feedback-box:hover,
+  .term-feedback-widget:hover,
+  .feedback-btn-yes:hover,
+  .feedback-btn-no:hover,
+  .favorite-btn:hover,
+  .js-add-fav:hover {
+    transform: none;
+  }
+}
+
+/* ================================================
+   9. Focus Indicators for Keyboard Navigation
+   ================================================ */
+.feedback-box:focus-within {
+  outline: 3px solid var(--link-color);
+  outline-offset: 2px;
+}
+
+/* ================================================
+   10. Additional Utility Classes
+   ================================================ */
+.feedback-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.feedback-buttons .btn {
+  min-width: 140px;
+  flex: 1;
+}
+
+/* Ensure proper text contrast ratios */
+.term-card .card-text,
+.term-card .card-title,
+.term-card h6 {
+  color: #e2e8f0;
+}
+
+body.morning .term-card .card-text,
+body.morning .term-card .card-title,
+body.morning .term-card h6,
+body.afternoon .term-card .card-text,
+body.afternoon .term-card .card-title,
+body.afternoon .term-card h6 {
+  color: #1a202c;
+}

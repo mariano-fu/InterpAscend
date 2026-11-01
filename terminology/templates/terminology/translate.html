@@ -1,0 +1,674 @@
+{% extends "terminology/base.html" %}
+{% load static %}
+
+{% block title %}InterpAscend Translator - Professional Medical & Legal Translation Tool{% endblock %}
+
+{% block description %}Professional medical and legal terminology translator built for interpreters, by an interpreter. Get accurate, context-aware translations for healthcare, immigration, financial, and government terminology in Spanish and English.{% endblock %}
+
+{% block og_title %}InterpAscend Translator - Built for Interpreters, by an Interpreter{% endblock %}
+{% block og_description %}Professional medical and legal terminology translator with accurate, context-aware translations. Built for interpreters, by an interpreter to bridge language barriers in critical situations.{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        {% if med_results or diag_results or mesh_results or financial_results or agency_results or immigration_results or l2_results or l3_results or medicare_results or llm_results %}
+            <h4 class="mb-3">Search Results</h4>
+            <div class="row row-cols-1 row-cols-md-2 g-3 mb-5">
+
+                {# 1) Medications #}
+                {% for term in med_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:medication_detail' term.id %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="medical"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# 2) Diagnoses #}
+                {% for term in diag_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:diagnosis_detail' term.id %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="diagnosis"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# 3) MeSH Terms #}
+                {% for term in mesh_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:mesh_detail' term.id %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="mesh"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# 4) Financial Terms #}
+                {% for term in financial_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:financial_detail' term.id %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="financial"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# 5) Agency Terms #}
+                {% for term in agency_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:agency_detail' term.id %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="agency"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# 6) Immigration Terms #}
+                {% for term in immigration_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:immigration_detail' term.id %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="immigration"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# 7) L2 Terms #}
+                {% for term in l2_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:l2_detail' term.id %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="l2"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# 8) L3 Terms #}
+                {% for term in l3_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:l3_detail' term.id %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="l3"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# 9) Medicare Terms #}
+                {% for term in medicare_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:medicare_detail' term.id %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="medicare"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# 10) LLM Terms #}
+                {% for term in llm_results %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <a href="{% url 'terminology:llm_detail' term.output|urlencode %}?query={{ form.query.value|urlencode }}&match_type={{ match_type }}&input={{ term.input|urlencode }}"
+                                   class="text-decoration-none flex-grow-1">
+                                    <strong>{{ term.input }}</strong>
+                                    <span class="mx-2 text-muted">→</span>
+                                    <em>{{ term.output }}</em>
+                                    {% if term.description %}
+                                        <p class="card-text text-muted mt-2">
+                                            {{ term.description|truncatechars:100 }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                                <button 
+                                    class="btn btn-sm btn-outline-primary ms-2 js-add-fav"
+                                    data-src="{{ term.input }}"
+                                    data-tgt="{{ term.output }}"
+                                    data-srclang="en"
+                                    data-tgtlang="es"
+                                    data-domain="llm"
+                                    aria-label="Add to favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        {% endif %}
+
+        {% if not med_results and not diag_results and not mesh_results and not financial_results and not agency_results and not immigration_results and not l2_results and not l3_results and not medicare_results and not llm_results and form.is_bound %}
+            <div class="alert alert-warning">
+                No translation found for "<strong>{{ form.cleaned_data.query }}</strong>."
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Latest Updates Section - Only show when there are no search results -->
+{% if recent_posts and not med_results and not diag_results and not mesh_results and not financial_results and not agency_results and not immigration_results and not l2_results and not l3_results and not medicare_results and not llm_results %}
+<div class="row justify-content-center mt-5">
+    <div class="col-12">
+        <div class="latest-updates-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Latest Updates</h3>
+                <a href="{% url 'terminology:blog_list' %}" class="btn btn-outline-primary">
+                    View All Posts →
+                </a>
+            </div>
+            
+            <div class="updates-grid">
+                {% for post in recent_posts %}
+                <article class="update-card">
+                    {% if post.featured_image %}
+                    <div class="update-image">
+                        <img src="{{ post.featured_image.url }}"
+                             alt="{{ post.title }}"
+                             loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div class="update-content">
+                        <div class="update-header">
+                            <h4 class="update-title">
+                                {{ post.title }}
+                            </h4>
+                            <div class="update-meta">
+                                <time datetime="{{ post.created_at|date:'Y-m-d' }}">
+                                    {{ post.created_at|date:"F j, Y" }}
+                                </time>
+                                <span class="meta-separator">•</span>
+                                <span class="author">{{ post.author }}</span>
+                            </div>
+                        </div>
+                        <div class="update-excerpt">
+                            {{ post.content|truncatewords:35|striptags }}
+                        </div>
+                        <div class="update-footer">
+                            <a href="{% url 'terminology:blog_detail' post.slug %}"
+                               class="read-more-link">
+                                Continue reading →
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Latest Updates Section Styles */
+.latest-updates-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 2.5rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0 1rem;
+}
+
+.updates-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.update-card {
+    display: flex;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 180px;
+}
+
+.update-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.update-image {
+    flex: 0 0 280px;
+    overflow: hidden;
+    position: relative;
+}
+
+.update-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.update-card:hover .update-image img {
+    transform: scale(1.05);
+}
+
+.update-content {
+    flex: 1;
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.update-header {
+    margin-bottom: 1rem;
+}
+
+.update-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.update-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.update-title a:hover {
+    color: #007bff;
+}
+
+.update-meta {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+}
+
+.meta-separator {
+    margin: 0 0.5rem;
+}
+
+.author {
+    font-weight: 500;
+}
+
+.update-excerpt {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 1rem;
+    flex-grow: 1;
+}
+
+.update-footer {
+    margin-top: auto;
+}
+
+.read-more-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.read-more-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .latest-updates-section {
+        padding: 1.5rem;
+        margin: 0 0.5rem;
+    }
+    
+    .update-card {
+        flex-direction: column;
+        min-height: auto;
+    }
+    
+    .update-image {
+        flex: 0 0 200px;
+        width: 100%;
+    }
+    
+    .update-content {
+        padding: 1.25rem;
+    }
+    
+    .update-title {
+        font-size: 1.2rem;
+    }
+    
+    .update-excerpt {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .latest-updates-section {
+        padding: 1rem;
+        margin: 0;
+        border-radius: 12px;
+    }
+    
+    .update-image {
+        flex: 0 0 160px;
+    }
+    
+    .update-content {
+        padding: 1rem;
+    }
+}
+
+/* Theme-specific adjustments */
+body.night .latest-updates-section,
+body.evening .latest-updates-section {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.night .update-card,
+body.evening .update-card {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+body.night .update-card:hover,
+body.evening .update-card:hover {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+body.morning .latest-updates-section,
+body.afternoon .latest-updates-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.morning .update-card,
+body.afternoon .update-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #333;
+}
+
+body.morning .update-card:hover,
+body.afternoon .update-card:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+}
+
+body.morning .update-excerpt,
+body.afternoon .update-excerpt {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+body.morning .update-meta,
+body.afternoon .update-meta {
+    color: rgba(0, 0, 0, 0.6);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+{% if med_results or diag_results or mesh_results or financial_results or agency_results or immigration_results or l2_results or l3_results or medicare_results or llm_results %}
+<script>
+  if (typeof gtag === "function") {
+    gtag('event', 'translation_search', {
+      term: '{{ form.query.value|escapejs }}',
+      industry: '{{ form.cleaned_data.domain|default:"general"|escapejs }}'
+    });
+  }
+</script>
+{% endif %}
+
+<script>
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.js-add-fav');
+    if (!btn) return;
+    
+    // Add to favorites
+    IAFavorites.add({
+        src: btn.dataset.src,
+        tgt: btn.dataset.tgt,
+        srcLang: btn.dataset.srclang || 'en',
+        tgtLang: btn.dataset.tgtlang || 'es',
+        domain: btn.dataset.domain || null,
+    });
+
+    // Fire GA4 favorite added event
+    if (typeof gtag === "function") {
+        gtag('event', 'favorite_added', {
+            term: btn.dataset.src,
+            translation: btn.dataset.tgt,
+            domain: btn.dataset.domain || 'general'
+        });
+    }
+
+    // Update button appearance
+    btn.classList.remove('btn-outline-primary');
+    btn.classList.add('btn-success');
+    btn.setAttribute('disabled', 'disabled');
+    btn.textContent = '⭐ Added';
+
+    // Prevent event bubbling to parent link
+    e.preventDefault();
+    e.stopPropagation();
+});
+</script>
+{% endblock %}

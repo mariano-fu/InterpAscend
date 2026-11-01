@@ -1,0 +1,81 @@
+<div class="card flashcard text-center">
+    <div class="card-body d-flex align-items-center justify-content-center py-5">
+        <div>
+            <div class="mb-4">
+                <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+            </div>
+            
+            <h3 class="text-success mb-3">Excellent Work!</h3>
+            
+            <p class="text-muted mb-4">
+                You've completed all due cards in the <strong>{{ category.name }}</strong> category.
+            </p>
+            
+            <div class="row text-center mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body py-3">
+                            <h5 class="text-primary mb-1">
+                                <i class="fas fa-trophy"></i>
+                            </h5>
+                            <small class="text-muted">Session Complete</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body py-3">
+                            <h5 class="text-success mb-1">
+                                <i class="fas fa-brain"></i>
+                            </h5>
+                            <small class="text-muted">Knowledge Retained</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body py-3">
+                            <h5 class="text-info mb-1">
+                                <i class="fas fa-clock"></i>
+                            </h5>
+                            <small class="text-muted">Come Back Later</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{% url 'srs:category_list' %}" class="btn btn-primary">
+                    <i class="fas fa-list me-2"></i>
+                    Browse Categories
+                </a>
+                <a href="{% url 'srs:user_stats' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    View Progress
+                </a>
+                <button class="btn btn-outline-secondary" 
+                        hx-get="{% url 'srs:get_next_card' category.slug %}"
+                        hx-target="#flashcard-area"
+                        hx-swap="innerHTML">
+                    <i class="fas fa-refresh me-2"></i>
+                    Check Again
+                </button>
+            </div>
+            
+            <div class="mt-4">
+                <div class="alert alert-info">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Study Tips
+                    </h6>
+                    <ul class="mb-0 small text-start">
+                        <li>Regular daily practice is more effective than long cramming sessions</li>
+                        <li>Cards will reappear based on how well you knew them</li>
+                        <li>Try studying other categories to maximize your learning</li>
+                        <li>Come back tomorrow for more review opportunities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

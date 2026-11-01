@@ -1,0 +1,496 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% if GA_ID %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GA_ID }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ GA_ID }}');
+    </script>
+    {% endif %}
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3965246929667985"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}InterpAscend Translator - Professional Medical & Legal Translation Tool{% endblock %}</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{% block description %}Professional medical and legal terminology translator built for interpreters, by an interpreter. Accurate, context-aware translations for healthcare, immigration, financial, and government terminology in Spanish and English.{% endblock %}">
+    <meta name="keywords" content="medical translator, legal interpreter, Spanish English translation, healthcare terminology, immigration terms, medical interpretation, professional translator tool">
+    <meta name="author" content="InterpAscend">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}InterpAscend Translator - Built for Interpreters, by an Interpreter{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Professional medical and legal terminology translator with accurate, context-aware translations for healthcare professionals, interpreters, and individuals navigating complex terminology.{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% block og_url %}https://interpascend.com{% endblock %}">
+    <meta property="og:site_name" content="InterpAscend">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}InterpAscend Translator - Professional Medical & Legal Translation{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Built for interpreters, by an interpreter. Accurate medical, legal, and professional terminology translations in Spanish and English.{% endblock %}">
+    
+    <!-- Additional SEO -->
+    <link rel="canonical" href="{% block canonical_url %}https://interpascend.com{% endblock %}">
+ 
+    <!-- Favicon and app icons (ICO + Apple touch) -->
+    <link rel="icon" href="{% static 'terminology/images/favicon.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'terminology/images/favicon.ico' %}" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'terminology/images/home-light_transparent.png' %}">
+    <meta name="theme-color" content="#ffffff">
+ 
+    <!-- Bootstrap CSS from CDN -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+        crossorigin="anonymous"
+    >
+
+    <!-- Custom CSS with themes -->
+    <link href="{% static 'terminology/css/style.css' %}" rel="stylesheet">
+    
+    <!-- Term Feedback CSS -->
+    <link href="{% static 'terminology/css/term_feedback.css' %}" rel="stylesheet">
+    
+    <!-- Inline script to set initial theme immediately -->
+    <script>
+    (function() {
+        const hour = new Date().getHours();
+        let timeClass;
+        if (hour >= 5 && hour < 12) {
+            timeClass = 'morning';
+        } else if (hour >= 12 && hour < 17) {
+            timeClass = 'afternoon';
+        } else if (hour >= 17 && hour < 20) {
+            timeClass = 'evening';
+        } else {
+            timeClass = 'night';
+        }
+        // Store the time class to apply after body loads
+        window.initialTimeClass = timeClass;
+    })();
+    </script>
+    
+    <!-- Immediate popout state check to prevent sidebar flash (normalized keys) -->
+    <script>
+    (function() {
+        try {
+            const ACTIVE_KEY = 'ia_fav_popout_active';
+            const TS_KEY = 'ia_fav_popout_ts';
+            const popoutState = localStorage.getItem(ACTIVE_KEY);
+            const popoutTimestamp = localStorage.getItem(TS_KEY);
+            
+            if (popoutState === 'true' && popoutTimestamp) {
+                const now = Date.now();
+                const timestamp = parseInt(popoutTimestamp);
+                const twoHours = 2 * 60 * 60 * 1000;
+                
+                if (now - timestamp < twoHours) {
+                    document.documentElement.classList.add('popout-active');
+                } else {
+                    localStorage.removeItem(ACTIVE_KEY);
+                    localStorage.removeItem(TS_KEY);
+                }
+            }
+        } catch (error) {
+            // Ignore localStorage errors in private browsing mode
+        }
+    })();
+    </script>
+    
+    <!-- CSS to hide sidebar when popout is active -->
+    <style>
+    html.popout-active .favorites-sidebar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    html.popout-active body {
+        padding-right: 0 !important;
+    }
+    </style>
+</head>
+
+<body id="background" class="loading">
+<script>
+// Apply the time class immediately to prevent flash
+if (window.initialTimeClass) {
+    document.body.classList.add(window.initialTimeClass);
+}
+</script>
+
+    <!-- Header with navigation -->
+    <header class="header-container">
+        <a href="{% url 'terminology:translate' %}" class="home-button-glass">
+            <img id="home-button-icon" src="{% static 'terminology/images/home-light_transparent.png' %}" alt="Home">
+        </a>
+        <script>
+        // Set correct icon immediately based on time to prevent flash
+        (function() {
+            const hour = new Date().getHours();
+            const homeIcon = document.getElementById('home-button-icon');
+            if (homeIcon && (hour >= 12 && hour < 20)) {
+                // afternoon or evening - use dark icon
+                homeIcon.src = '/static/terminology/images/home-dark_transparent.png';
+            }
+        })();
+        </script>
+        
+        <!-- Desktop Navigation -->
+        <nav class="desktop-nav d-none d-md-flex">
+            {% if user.is_authenticated %}
+                <a href="{% url 'srs:dashboard' %}" class="nav-link">
+                    <i class="fas fa-graduation-cap me-1"></i>Study
+                </a>
+                <span class="nav-separator">•</span>
+                <a href="{% url 'srs:user_stats' %}" class="nav-link">Stats</a>
+                <span class="nav-separator">•</span>
+                <form method="post" action="{% url 'srs:logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn btn-link p-0 border-0" style="background: none; color: inherit; text-decoration: none;">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'srs:login' %}" class="nav-link">
+                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                </a>
+                <span class="nav-separator">•</span>
+                <a href="{% url 'srs:signup' %}" class="nav-link">
+                    <i class="fas fa-user-plus me-1"></i>Sign Up
+                </a>
+            {% endif %}
+            <span class="nav-separator">•</span>
+            <a href="{% url 'terminology:blog_list' %}" class="nav-link">Blog</a>
+            <span class="nav-separator">•</span>
+            <a href="{% url 'terminology:feedback' %}" class="nav-link">Feedback</a>
+            <span class="nav-separator">•</span>
+            <a href="{% url 'terminology:about_us' %}" class="nav-link">About</a>
+            <span class="nav-separator">•</span>
+            <a href="{% url 'terminology:contact_us' %}" class="nav-link">Contact</a>
+            <span class="nav-separator">•</span>
+            <a href="{% url 'terminology:privacy_policy' %}" class="nav-link">Privacy</a>
+        </nav>
+        
+        <!-- Mobile Hamburger Button -->
+        <button class="hamburger-btn d-md-none" id="hamburgerBtn" aria-label="Open navigation menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+    </header>
+
+    <!-- Mobile Off-Canvas Menu -->
+    <div class="mobile-menu-overlay d-md-none" id="mobileMenuOverlay"></div>
+    <nav class="mobile-menu d-md-none" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <h5>Navigation</h5>
+            <button class="close-btn" id="closeMobileMenu" aria-label="Close navigation menu">×</button>
+        </div>
+        <div class="mobile-menu-content">
+            {% if user.is_authenticated %}
+                <div class="mobile-nav-section">
+                    <div class="mobile-nav-header">Study System</div>
+                    <a href="{% url 'srs:dashboard' %}" class="mobile-nav-link">
+                        <i class="fas fa-graduation-cap me-2"></i>Dashboard
+                    </a>
+                    <a href="{% url 'srs:user_stats' %}" class="mobile-nav-link">
+                        <i class="fas fa-chart-bar me-2"></i>Statistics
+                    </a>
+                </div>
+                <div class="mobile-nav-section">
+                    <div class="mobile-nav-header">Account</div>
+                    <form method="post" action="{% url 'srs:logout' %}" style="display: inline; width: 100%;">
+                        {% csrf_token %}
+                        <button type="submit" class="mobile-nav-link btn btn-link p-0 border-0 w-100 text-start" style="background: none; color: inherit;">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="mobile-nav-section">
+                    <div class="mobile-nav-header">Account</div>
+                    <a href="{% url 'srs:login' %}" class="mobile-nav-link">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    <a href="{% url 'srs:signup' %}" class="mobile-nav-link">
+                        <i class="fas fa-user-plus me-2"></i>Sign Up
+                    </a>
+                </div>
+            {% endif %}
+            <div class="mobile-nav-section">
+                <div class="mobile-nav-header">Site</div>
+                <a href="{% url 'terminology:translate' %}" class="mobile-nav-link">
+                    <i class="fas fa-language me-2"></i>Translator
+                </a>
+                <a href="{% url 'terminology:blog_list' %}" class="mobile-nav-link">
+                    <i class="fas fa-blog me-2"></i>Blog
+                </a>
+                <a href="{% url 'terminology:feedback' %}" class="mobile-nav-link">
+                    <i class="fas fa-comment me-2"></i>Provide Feedback
+                </a>
+                <a href="{% url 'terminology:about_us' %}" class="mobile-nav-link">
+                    <i class="fas fa-info-circle me-2"></i>About Us
+                </a>
+                <a href="{% url 'terminology:contact_us' %}" class="mobile-nav-link">
+                    <i class="fas fa-envelope me-2"></i>Contact Us
+                </a>
+                <a href="{% url 'terminology:privacy_policy' %}" class="mobile-nav-link">
+                    <i class="fas fa-shield-alt me-2"></i>Privacy Policy
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    {# === Always include global search bar on every page === #}
+    <div class="container py-4">
+        {% include 'terminology/_search_form.html' %}
+    </div>
+
+    <main class="container py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- HTMX for dynamic interactions -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"
+            integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+            crossorigin="anonymous"></script>
+    
+    <!-- Bootstrap JS -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"
+    ></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Background & Icon updater -->
+    <script src="{% static 'terminology/js/background_updater.js' %}"></script>
+    <!-- Favorites Sidebar -->
+    <aside class="favorites-sidebar is-hidden" aria-label="Favorite terms">
+      <div class="favorites-header p-3 border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Favorites (<span id="iaFavCount">0</span>)</h5>
+          <div class="btn-group">
+            <!-- Replaced unsupported emoji with inline SVG for broad mobile support -->
+            <button id="iaPopoutBtn" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center"
+                    aria-label="Open favorites in new tab" title="Open favorites in new tab" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path d="M14 3h7v7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 14v6a1 1 0 0 1-1 1h-14a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button id="iaClearAllBtn" class="btn btn-sm btn-outline-danger" aria-label="Clear all favorites" type="button">
+              Clear
+            </button>
+          </div>
+        </div>
+        <input
+          type="search"
+          id="iaFavSearch"
+          class="form-control mt-3"
+          placeholder="Filter favorites..."
+          aria-label="Filter favorites"
+        >
+      </div>
+      <div id="iaFavList" class="favorites-list"></div>
+    </aside>
+    
+    <!-- Favorites: minimal bootstrap only; heavy restore logic lives in favorites.js -->
+    <script>
+    (function(){
+      // No-op: base template no longer mutates favorites DOM.
+      // All popout/restore logic is centralized in IAFavorites.
+    })();
+    </script>
+    
+    <!-- Add the favorites.js script BEFORE initializing -->
+    <script src="{% static 'terminology/js/favorites.js' %}"></script>
+    <!-- Initialize favorites with keyboard shortcut support -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        IAFavorites.init({
+          listEl: document.getElementById('iaFavList'),
+          countEl: document.getElementById('iaFavCount'),
+          searchEl: document.getElementById('iaFavSearch'),
+          clearBtn: document.getElementById('iaClearAllBtn')
+        });
+      });
+    </script>
+    
+    <!-- Term Feedback JavaScript -->
+    <script src="{% static 'terminology/js/term_feedback.js' %}"></script>
+    
+    <!-- TTS (Text-to-Speech) JavaScript -->
+    <script src="{% static 'terminology/js/tts.js' %}"></script>
+
+    <!-- Add the global click handler for favorites -->
+    <script>
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.js-add-fav');
+        if (!btn) return;
+        
+        // Add to favorites
+        IAFavorites.add({
+            src: btn.dataset.src,
+            tgt: btn.dataset.tgt,
+            srcLang: btn.dataset.srclang || 'en',
+            tgtLang: btn.dataset.tgtlang || 'es',
+            domain: btn.dataset.domain || null,
+        });
+
+        // Fire GA4 favorite added event
+        if (typeof gtag === "function") {
+            gtag('event', 'favorite_added', {
+                term: btn.dataset.src,
+                translation: btn.dataset.tgt,
+                domain: btn.dataset.domain || 'general'
+            });
+        }
+
+        // Update button appearance
+        btn.classList.remove('btn-outline-primary');
+        btn.classList.add('btn-success');
+        btn.setAttribute('disabled', 'disabled');
+        btn.textContent = '⭐ Added';
+
+        // Prevent event bubbling
+        e.preventDefault();
+        e.stopPropagation();
+        });
+    </script>
+
+    <!-- Mobile Menu JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+        
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            mobileMenuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeMobileMenuFn() {
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        hamburgerBtn.addEventListener('click', openMobileMenu);
+        closeMobileMenu.addEventListener('click', closeMobileMenuFn);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenuFn);
+        
+        // Close menu when clicking on a nav link
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', closeMobileMenuFn);
+        });
+        
+        // Close menu with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                closeMobileMenuFn();
+            }
+        });
+    });
+    </script>
+    
+    <!-- Additional CSS for mobile navigation sections -->
+    <style>
+    .mobile-nav-section {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1rem 0;
+    }
+    
+    .mobile-nav-section:last-child {
+        border-bottom: none;
+    }
+    
+    .mobile-nav-header {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        padding: 0 1rem;
+    }
+    
+    .mobile-nav-link {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        color: white;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+    }
+    
+    .mobile-nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+    </style>
+    
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-nav">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'srs:dashboard' %}" class="footer-link">
+                            <i class="fas fa-graduation-cap me-1"></i>Study
+                        </a>
+                        <span class="footer-separator">•</span>
+                        <a href="{% url 'srs:user_stats' %}" class="footer-link">Stats</a>
+                        <span class="footer-separator">•</span>
+                        <form method="post" action="{% url 'srs:logout' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="footer-link btn btn-link p-0 border-0" style="background: none; color: inherit; text-decoration: none; font-size: inherit; font-weight: inherit; opacity: inherit;">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'srs:login' %}" class="footer-link">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                        <span class="footer-separator">•</span>
+                        <a href="{% url 'srs:signup' %}" class="footer-link">
+                            <i class="fas fa-user-plus me-1"></i>Sign Up
+                        </a>
+                    {% endif %}
+                    <span class="footer-separator">•</span>
+                    <a href="{% url 'terminology:blog_list' %}" class="footer-link">Blog</a>
+                    <span class="footer-separator">•</span>
+                    <a href="{% url 'terminology:feedback' %}" class="footer-link">Feedback</a>
+                    <span class="footer-separator">•</span>
+                    <a href="{% url 'terminology:about_us' %}" class="footer-link">About</a>
+                    <span class="footer-separator">•</span>
+                    <a href="{% url 'terminology:contact_us' %}" class="footer-link">Contact</a>
+                    <span class="footer-separator">•</span>
+                    <a href="{% url 'terminology:privacy_policy' %}" class="footer-link">Privacy</a>
+                </div>
+                <div class="footer-info">
+                    <p>&copy; 2025 InterpAscend. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Additional JavaScript from child templates -->
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>
